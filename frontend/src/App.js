@@ -27,10 +27,10 @@ function App() {
         <Routes>
           <Route path='*' element={<NotFound />} />
           <Route exact path='/' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/logout' element={<Logout />} />
-          <Route path='/home' element={<Protected><Home /></Protected>} />
-          <Route path='/newList' element={<Protected><NewList/></Protected>} />
+          <Route exact path='/register' element={<Register />} />
+          <Route exact path='/logout' element={<Logout />} />
+          <Route exact path='/home' element={<Protected><Home /></Protected>} />
+          <Route exact path='/list/new' element={<Protected><NewList/></Protected>} />
           <Route path='/list/:id' element={<Protected><List /></Protected>} />
           <Route path='/item/:id' element={<Protected><Todo /></Protected>} />
         </Routes>

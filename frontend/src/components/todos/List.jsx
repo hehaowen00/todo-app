@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Alert, Button, Container, Form, FormControl, ListGroup, Row, Col } from 'react-bootstrap'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import TodoItem from './TodoItem';
 import Topbar from '../util/Topbar';
@@ -11,6 +11,7 @@ import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '
 function List() {
   const { context } = useContext(AuthContext);
   const { id } = useParams();
+  const nav = useNavigate();
 
   const [list, setList] = useState({});
   const [state, setState] = useState({
@@ -107,6 +108,7 @@ function List() {
   const getList = useCallback(async () => {
     let resp = await GetList(context.token, id);
     if (resp.error) {
+      nav('/');
       return;
     }
     const { list } = resp;

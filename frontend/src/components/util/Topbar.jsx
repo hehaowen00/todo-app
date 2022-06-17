@@ -61,7 +61,7 @@ function SignedIn({ name }) {
             <LinkContainer to='/home'>
               <Nav.Link>My Lists</Nav.Link>
             </LinkContainer>
-            <LinkContainer to='/newList'>
+            <LinkContainer to='/list/new'>
               <Nav.Link>Add List</Nav.Link>
             </LinkContainer>
           </Nav>

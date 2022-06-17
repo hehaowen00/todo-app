@@ -33,6 +33,7 @@ function Todo() {
   const getItem = async () => {
     let resp = await GetTodo(context.token, parseInt(id));
     if (resp.error) {
+      cancel();
       return;
     }
 

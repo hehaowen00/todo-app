@@ -14,7 +14,7 @@ function Home() {
 
   const match = (s) => {
     return s.toLowerCase().includes(search.toLowerCase());
-  }
+  };
 
   useEffect(() => {
     getLists()
