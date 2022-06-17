@@ -5,9 +5,12 @@ import Topbar from '../util/Topbar'
 
 import { AuthContext } from '../../context/auth';
 import { AddList } from '../../api/todo';
+import { useNavigate } from 'react-router-dom';
 
 function NewList() {
   const {context} = useContext(AuthContext);
+  const nav = useNavigate();
+
   const [error, setError] = useState(null);
   const [name, setName] = useState('');
 
@@ -26,7 +29,7 @@ function NewList() {
         return
       }
 
-      window.history.back();
+      nav('/');
     }
   };
 
