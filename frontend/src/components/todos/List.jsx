@@ -46,7 +46,7 @@ function List() {
     timer = setTimeout(updateList, 1000);
   };
 
-  const updateState = (e) => {
+  const updateField = (e) => {
     const { name, value } = e.target;
     setState({ ...state, [name]: value });
   };
@@ -141,7 +141,7 @@ function List() {
             />
           </Col>
           <Col>
-            <Form.Select name='filter' size='xs' onChange={updateState}>
+            <Form.Select name='filter' size='xs' onChange={updateField}>
               <option value='1'>All</option>
               <option value='2'>In Progress</option>
               <option value='3'>Done</option>
@@ -157,7 +157,7 @@ function List() {
                 type='input'
                 className='me-2'
                 name='desc'
-                onChange={updateState}
+                onChange={updateField}
                 placeholder='New Todo'
                 required={true}
                 value={state.desc}

@@ -3,8 +3,9 @@ import { Form, ListGroupItem } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 function TodoItem({ item, remove, update }) {
-  const style = { textDecoration: item.status ? 'line-through': ''};
   const nav = useNavigate();
+
+  const style = { textDecoration: item.status ? 'line-through': ''};
 
   const editTodo = (e) => {
     const link = `/item/${item.id}`
@@ -32,7 +33,7 @@ function TodoItem({ item, remove, update }) {
           onChange={updateStatus}
         />
       </Form>
-      <div className='w-100' style={style}  onClick={editTodo}>
+      <div className='w-100' style={style} onClick={editTodo}>
         <div className='item-text no-select pointer'>
           <span>{item.desc}</span>
         </div>

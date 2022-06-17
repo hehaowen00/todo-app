@@ -105,6 +105,7 @@ func (c *Conn) GetTodoLists(id int64) ([]TodoList, error) {
 	SELECT id, name
 	FROM lists
 	WHERE user_id = ?
+	ORDER BY name
 	`
 
 	stmt, err := c.db.Prepare(GET_QUERY)
