@@ -25,7 +25,7 @@ function NewList() {
     if (name && name.trim() !== '') {
       let resp = await AddList(context.token, name.trim());
       if (resp.error) {
-        setError('Failed to add list');
+        setError(resp.message);
         return
       }
 
@@ -48,8 +48,7 @@ function NewList() {
             {error}
           </Alert>
           <p></p>
-        </>
-}
+        </>}
         <Form onSubmit={addNewList}>
           <Row className='d-flex'>
             <Col md='12'>
@@ -62,9 +61,8 @@ function NewList() {
               value={name}
             />
             </Col>
-            </Row>
-
-        <Row className='justify-content-end'> 
+          </Row>
+          <Row className='justify-content-end'> 
             <Col md='2'>
               <Button
                 className='form-control'

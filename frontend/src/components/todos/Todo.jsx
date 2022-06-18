@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Container, Form, FormControl, Row, Col, FormGroup } from 'react-bootstrap';
+import { Alert, Button, Container, Form, FormControl, Row, Col, FormGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
 import Topbar from '../util/Topbar';
@@ -12,6 +12,7 @@ function Todo() {
   const { id } = useParams();
 
   const [state, setState] = useState({
+    error: '',
     id: parseInt(id),
     desc: '',
     status: false,
@@ -42,8 +43,10 @@ function Todo() {
 
   const updateItem = async (e) => {
     e.preventDefault();
+    setState({ ...state, error: '' });
     let resp = await UpdateTodo(context.token, state);
     if (resp.error) {
+      setState({ ...state, error: resp.message });
       return;
     }
 
@@ -59,6 +62,13 @@ function Todo() {
       <Topbar />
       <Container>
         <p></p>
+        {state.error && 
+        <>
+          <Alert variant='danger'>
+            {state.error}
+          </Alert>
+          <p></p>
+        </>}
         <Form onSubmit={updateItem}>
           <Row>
             <Col>
