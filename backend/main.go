@@ -24,24 +24,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	conn := models.NewConn(db)
-
-	err = conn.Migrate(&models.User{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = conn.Migrate(&models.TodoList{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = conn.Migrate(&models.TodoItem{})
+	conn, err := models.NewConn(db)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	router := httprouter.New()
+
 	routes.Init(&auth, conn)
 	routes.RegisterRoutes(router)
 

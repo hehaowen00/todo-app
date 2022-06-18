@@ -28,19 +28,19 @@ func Init(auth *auth.Auth, conn *models.Conn) error {
 }
 
 func RegisterRoutes(router *httprouter.Router) {
-	router.GET("/lists", requireAuth(GetLists))
-	router.POST("/lists", requireAuth(AddList))
-	router.PUT("/lists", requireAuth(UpdateList))
-	router.DELETE("/lists", requireAuth(DeleteList))
+	router.GET("/api/lists", requireAuth(GetLists))
+	router.POST("/api/lists", requireAuth(AddList))
+	router.PUT("/api/lists", requireAuth(UpdateList))
+	router.DELETE("/api/lists", requireAuth(DeleteList))
 
-	router.GET("/todos/:id", requireAuth(GetTodos))
-	router.POST("/todos", requireAuth(AddTodo))
-	router.PUT("/todos", requireAuth(UpdateTodo))
-	router.DELETE("/todos", requireAuth(DeleteTodo))
+	router.GET("/api/todos/:id", requireAuth(GetTodos))
+	router.POST("/api/todos", requireAuth(AddTodo))
+	router.PUT("/api/todos", requireAuth(UpdateTodo))
+	router.DELETE("/api/todos", requireAuth(DeleteTodo))
 
-	router.GET("/todo/:id", requireAuth(GetTodo))
+	router.GET("/api/todo/:id", requireAuth(GetTodo))
 
-	router.POST("/register", Register)
-	router.POST("/login", Login)
-	router.POST("/verify", requireAuth(VerifyToken))
+	router.POST("/api/register", Register)
+	router.POST("/api/login", Login)
+	router.POST("/api/verify", requireAuth(VerifyToken))
 }
