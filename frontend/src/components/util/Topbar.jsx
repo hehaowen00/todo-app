@@ -3,7 +3,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navigate} from 'react-router-dom';
 
-import { AuthContext } from '../../context/auth';
+import { AuthContext } from '../../context/Auth';
 
 function Topbar() {
   const { context }= useContext(AuthContext);

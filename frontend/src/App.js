@@ -13,8 +13,8 @@ import Logout from './components/util/Logout';
 import NotFound from './components/util/NotFound';
 import Protected from './components/util/Protected';
 
-import { AuthProvider } from './context/auth';
-import { ListProvider } from './context/list';
+import { AuthProvider } from './context/Auth';
+import { ListProvider } from './context/List';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';

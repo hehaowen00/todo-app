@@ -4,8 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Topbar from './util/Topbar';
 
-import { AuthContext, checkToken } from '../context/auth';
-import { registerUser } from '../api/auth';
+import { AuthContext, checkToken } from '../context/Auth';
+import { registerUser } from '../api/Auth';
 
 function Register() {
   const { setToken } = useContext(AuthContext);

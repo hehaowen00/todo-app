@@ -1,20 +1,13 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { AuthContext, checkToken } from '../../context/auth';
+import { AuthContext } from '../../context/Auth';
 
 function Protected({ children }) {
-  const { context, setToken } = useContext(AuthContext);
-
-  const verify = useCallback(async () => {
-    let resp = await checkToken();
-    if (!resp.error) {
-      setToken(resp.token);
-    }
-  }, []);
+  const { context, getContext } = useContext(AuthContext);
 
   useEffect(() => {
     if (Object.keys(context).length === 0) {
-      verify();
+      getContext()
     }
   }, []);
 

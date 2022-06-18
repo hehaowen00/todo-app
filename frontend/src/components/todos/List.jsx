@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 import TodoItem from './TodoItem';
 import Topbar from '../util/Topbar';
 
-import { AuthContext } from '../../context/auth';
-import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '../../api/todo';
+import { AuthContext } from '../../context/Auth';
+import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '../../api/Todo';
 
 function List() {
   const { context } = useContext(AuthContext);
@@ -48,17 +48,14 @@ function List() {
     setState({ ...state, [name]: value });
   };
 
-  const updateString = (e) => {
-    const { name, value } = e.target;
-    setState({ ...state, [name]: value.trim() });
-  };
-
   const updateList = async () => {
-    let resp = await UpdateList(context.token, { ...list, name: state.name });
+    const name = state.name.trim();
+    let resp = await UpdateList(context.token, { ...list, name });
     if (resp.error) {
       setState({ ...state, error: 'Unable to update list name'});
       return;
     }
+    setState({ ...state, name });
   };
 
   const addTodo = async (e) => {
@@ -72,6 +69,7 @@ function List() {
       setState({ ...state, error: resp.message });
       return;
     }
+
     setState({
       ...state,
       desc: '',
@@ -111,18 +109,18 @@ function List() {
     if (resp.error) {
       return;
     }
-    setList(resp.list)
-    let todos = await getTodos();
-    setState({ ...state, name: resp.list.name, todos })
-  }, []);
+    const { list } = resp;
+    setList(list)
 
-  const getTodos = async () => {
-    let resp = await GetTodos(context.token, id);
-    if (resp.error) {
-      return [];
+    let todos = [];
+    resp = await GetTodos(context.token, id);
+
+    if (!resp.error) {
+      todos = resp.todos;
     }
-    return resp.todos;
-  };
+
+    setState({ ...state, name: list.name, todos })
+  }, []);
 
   useEffect(() => {
     getList();
@@ -141,7 +139,7 @@ function List() {
               className='me-2'
               name='name'
               placeholder='Name'
-              onChange={updateString}
+              onChange={updateField}
               onKeyDown={keydown}
               onKeyUp={keyup}
               value={state.name}

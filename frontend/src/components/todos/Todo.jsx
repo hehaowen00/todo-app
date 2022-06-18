@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Container, Form, FormControl, Row, Col, FormGroup } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
-import { GetTodo, UpdateTodo } from '../../api/todo';
-import { AuthContext } from '../../context/auth';
+
 import Topbar from '../util/Topbar';
+
+import { AuthContext } from '../../context/Auth';
+import { GetTodo, UpdateTodo } from '../../api/Todo';
 
 function Todo() {
   const { context } = useContext(AuthContext);
   const { id } = useParams();
+
   const [state, setState] = useState({
     id: parseInt(id),
     desc: '',

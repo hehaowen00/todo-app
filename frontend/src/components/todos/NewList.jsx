@@ -3,8 +3,8 @@ import { Alert, Button, Container, Form, FormControl, Row, Col } from 'react-boo
 
 import Topbar from '../util/Topbar'
 
-import { AuthContext } from '../../context/auth';
-import { AddList } from '../../api/todo';
+import { AuthContext } from '../../context/Auth';
+import { AddList } from '../../api/Todo';
 import { useNavigate } from 'react-router-dom';
 
 function NewList() {

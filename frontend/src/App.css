@@ -38,6 +38,14 @@ button.full-width {
   padding: 0.375rem 0.75rem !important;
 }
 
+.modal-body {
+  padding: 0.75rem;
+}
+
+.modal-footer {
+  padding: 0.5rem;
+}
+
 a.plain {
   text-decoration: none !important;
   word-break: break-all;
