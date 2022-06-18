@@ -6,21 +6,18 @@ import TodoItem from './TodoItem';
 import Topbar from '../util/Topbar';
 
 import { AuthContext } from '../../context/auth';
-import { ListContext } from '../../context/list';
-import { AddTodo, DeleteTodo, GetTodos, UpdateList, UpdateTodo } from '../../api/todo';
+import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '../../api/todo';
 
 function List() {
   const { context } = useContext(AuthContext);
-  const { getList } = useContext(ListContext);
   const { id } = useParams();
 
-  const list = getList(parseInt(id));
-
+  const [list, setList] = useState({});
   const [state, setState] = useState({
      desc: '',
      error: '',
      filter: '1',
-     name: list.name,
+     name: '',
      todos: [],
   });
 
@@ -109,17 +106,27 @@ function List() {
     setState({ ...state, todos, });
   };
 
-  const getTodos = useCallback(async () => {
-    let resp = await GetTodos(context.token, list.id);
+  const getList = useCallback(async () => {
+    let resp = await GetList(context.token, id);
     if (resp.error) {
       return;
     }
-    setState({ ...state, todos: resp.todos});
+    setList(resp.list)
+    let todos = await getTodos();
+    setState({ ...state, name: resp.list.name, todos })
   }, []);
 
+  const getTodos = async () => {
+    let resp = await GetTodos(context.token, id);
+    if (resp.error) {
+      return [];
+    }
+    return resp.todos;
+  };
+
   useEffect(() => {
-    getTodos();
-  }, [getTodos]);
+    getList();
+  }, []);
 
   return (
     <>
@@ -158,7 +165,7 @@ function List() {
                 className='me-2'
                 name='desc'
                 onChange={updateField}
-                placeholder='New Todo'
+                placeholder='New Item'
                 required={true}
                 value={state.desc}
               />

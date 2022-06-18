@@ -26,6 +26,33 @@ export async function GetLists(token) {
   }
 }
 
+export async function GetList(token, id) {
+  if (id === undefined) {
+    return {error: true }
+  }
+  try {
+    let resp = await fetch(LIST_ENDPOINT + `/${id}`, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (resp.ok) {
+      let list = await resp.json();
+      return { error: false, list};
+    }
+
+    return { error: true, message: 'Failed to get lists' };
+  } catch (error) {
+    return {
+       error: true,
+       message: 'Failed to connect to server'
+    };
+  }
+}
+
 export async function AddList(token, name) {
   try {
     let resp = await fetch(LIST_ENDPOINT, {

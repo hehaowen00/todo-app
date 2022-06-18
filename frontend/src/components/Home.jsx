@@ -8,9 +8,10 @@ import { GetLists } from '../api/todo';
 import { ListContext } from '../context/list';
 
 function Home() {
-  const [error, setError] = useState('');
   const { context, addLists } = useContext(ListContext);
   const { lists } = context;
+
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
 
   const getLists = useCallback(async () => {

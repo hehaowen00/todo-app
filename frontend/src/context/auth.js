@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { verifyToken } from '../api/auth';
 
-export const AuthContext = React.createContext(null);
+export const AuthContext = React.createContext({});
 
 export async function checkToken() {
   let token = localStorage.getItem('token');

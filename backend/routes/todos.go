@@ -146,6 +146,28 @@ func GetLists(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	json.NewEncoder(w).Encode(lists)
 }
 
+func GetList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+	userID := req.Context().Value(idKey).(int64)
+	value := ps.ByName("id")
+
+	listID, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		log.Println(err)
+		httpMessage(w, http.StatusBadRequest)
+		return
+	}
+
+	list, err := dbConn.GetTodoList(listID, userID)
+	if err != nil {
+		log.Println(err)
+		httpMessage(w, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(list)
+}
+
 func AddList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	userID := req.Context().Value(idKey).(int64)
 

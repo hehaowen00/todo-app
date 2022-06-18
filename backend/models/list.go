@@ -136,6 +136,32 @@ func (c *Conn) GetTodoLists(id int64) ([]TodoList, error) {
 	return lists, nil
 }
 
+func (c *Conn) GetTodoList(id int64, userId int64) (*TodoList, error) {
+	const GET_QUERY = `
+	SELECT id, name
+	FROM lists
+	WHERE id = ? AND user_id = ?
+	`
+
+	stmt, err := c.db.Prepare(GET_QUERY)
+	if err != nil {
+		return nil, err
+	}
+
+	row := stmt.QueryRow(id, userId)
+	if err != nil {
+		return nil, err
+	}
+
+	var list TodoList
+
+	err = row.Scan(&list.Id, &list.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &list, nil
+}
 func (c *Conn) GetTodoItem(item *TodoItem) error {
 	const SELECT_QUERY = `
 	SELECT list_id, desc, status

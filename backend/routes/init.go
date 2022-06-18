@@ -29,6 +29,7 @@ func Init(auth *auth.Auth, conn *models.Conn) error {
 
 func RegisterRoutes(router *httprouter.Router) {
 	router.GET("/api/lists", requireAuth(GetLists))
+	router.GET("/api/lists/:id", requireAuth(GetList))
 	router.POST("/api/lists", requireAuth(AddList))
 	router.PUT("/api/lists", requireAuth(UpdateList))
 	router.DELETE("/api/lists", requireAuth(DeleteList))
