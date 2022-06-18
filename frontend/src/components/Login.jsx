@@ -10,8 +10,7 @@ import { loginUser } from '../api/Auth'
 function Login() {
   const { context, clearAuth, setToken } = useContext(AuthContext);
 
-  let [state, setState] = useState({});
-  let [error, setError] = useState('');
+  let [state, setState] = useState({ error: '', username: '', password: '', });
 
   let nav = useNavigate();
 
@@ -26,11 +25,12 @@ function Login() {
 
   const login = async (e) => {
     e.preventDefault();
+    setState({ ...state, error: ''});
 
     let resp = await loginUser(state.username, state.password);
 
     if (resp.error) {
-      setError(resp.message);
+      setState({ ...state, error: resp.message });
       clearAuth();
       return
     }
@@ -92,9 +92,9 @@ function Login() {
                  required
               />
               </Form.Group>
-              {error !== '' && 
+              {state.error !== '' && 
                 <Alert variant='danger'>
-                    {error}
+                    {state.error}
                 </Alert>
               }
 

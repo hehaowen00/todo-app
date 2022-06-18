@@ -31,7 +31,7 @@ func (user *User) Trim() {
 	user.Password = strings.TrimSpace(user.Password)
 }
 
-func (c *Conn) UserExists(user *User) (bool, error) {
+func (c *Conn) UsernameExists(user *User) (bool, error) {
 	const CHECK_QUERY = `
 	SELECT username FROM users
 	WHERE username = ?
@@ -43,6 +43,29 @@ func (c *Conn) UserExists(user *User) (bool, error) {
 	}
 
 	row := stmt.QueryRow(user.Username)
+
+	var username string
+
+	err = row.Scan(&username)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+
+	return true, err
+}
+
+func (c *Conn) UserExists(user *User) (bool, error) {
+	const CHECK_QUERY = `
+	SELECT username FROM users
+	WHERE id = ? AND username = ?
+	`
+
+	stmt, err := c.db.Prepare(CHECK_QUERY)
+	if err != nil {
+		return false, err
+	}
+
+	row := stmt.QueryRow(user.Id, user.Username)
 
 	var username string
 

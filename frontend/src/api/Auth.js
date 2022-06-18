@@ -17,17 +17,18 @@ export async function loginUser(username, password) {
       return { error: false, token };
     }
 
-    if (resp.status === 401) {
-      return { error: true, message: 'Invalid Credentials' };
-    }
-
-    return { error: true, message: resp.error };
+    let message = await resp.json();
+    return { error: true, message };
   } catch (error) {
     return { error: true, message: 'Could not connect to server' };
   }
 }
 
 export async function registerUser(username, password) {
+  if (username === '' || password === '') {
+    return { error: true, message: 'Username / Password cannot be empty'}
+  }
+
   try {
     let resp = await fetch(BASE_URL + '/register', {
       method: 'POST',
@@ -39,15 +40,12 @@ export async function registerUser(username, password) {
       body: JSON.stringify({ username, password }),
     });
 
-    if (resp.ok) {
-      return { error: false };
-    }
-
-    if (resp.status === 400) {
-      return { error: true, message: 'Username already exists' };
-    }
-
     let message = await resp.json();
+
+    if (resp.ok) {
+      return { error: false,  message };
+    }
+
     return { error: true, message };
   } catch (error) {
     return { error: true, message: 'Could not connect to server' }
@@ -68,10 +66,6 @@ export async function verifyToken(token) {
     if (resp.ok) {
       let token = await resp.json();
       return { error: false, token };
-    }
-
-    if (resp.status === 401) {
-      return { error: true, message: 'Invalid Token' };
     }
 
     let message = await resp.json();

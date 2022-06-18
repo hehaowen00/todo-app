@@ -11,9 +11,12 @@ function Register() {
   const { setToken } = useContext(AuthContext);
   const nav = useNavigate();
 
-  let [state, setState] = useState({});
-  let [error, setError] = useState('');
-  let [success, setSuccess] = useState('');
+  let [state, setState] = useState({
+    error: '',
+    success: '',
+    username: '',
+    password: '',
+  });
 
   const updateUsername = (e) => {
     setState({ ...state, username: e.target.value.trim() });
@@ -25,18 +28,17 @@ function Register() {
 
   const register = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setState({ ...state, error: '', success: '' });
 
     let resp = await registerUser(state.username, state.password);
+    let message = resp.message;
 
     if (resp.error) {
-      setError(resp.message);
+      setState({ ...state, error: message });
       return
     }
 
-    setSuccess('User Created.');
-    setState({});
+    setState({ error: '', success: message, username: '', password: '', });
   };
 
   const verify = useCallback(async () => {
@@ -67,7 +69,6 @@ function Register() {
               <Form.Group className='mb-3'>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
-                 name='username'
                  type='username'
                  placeholder='Username'
                  onChange={updateUsername}
@@ -78,7 +79,6 @@ function Register() {
               <Form.Group className='mb-3'>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
-                 name='password'
                  type='password'
                  placeholder='Password'
                  onChange={updatePassword}
@@ -86,14 +86,14 @@ function Register() {
                  required
                 />
               </Form.Group>
-              {error && 
+              {state.error && 
                 <Alert variant='danger'>
-                  {error}
+                  {state.error}
                 </Alert>
               }
-              {success &&
+              {state.success &&
                 <Alert variant='success'>
-                  {success} <span>Click <Link to='/'>Here</Link> to login.</span>
+                  User Created. <span>Click <Link to='/'>Here</Link> to login.</span>
                 </Alert>
               }
               <Button

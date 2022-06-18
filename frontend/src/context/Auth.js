@@ -6,7 +6,7 @@ export const AuthContext = React.createContext();
 export async function checkToken() {
   let token = localStorage.getItem('token');
 
-  if (token == null) {
+  if (token == null || token === '') {
     return { error: true };
   }
 

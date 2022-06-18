@@ -24,31 +24,31 @@ func Register(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Could not decode JSON")
 		return
 	}
 
 	user.Trim()
 
-	exists, err := dbConn.UserExists(&user)
+	exists, err := dbConn.UsernameExists(&user)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		log.Println(err)
+		jsonMessage(w, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
 	if exists {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("user already exists")
+		jsonMessage(w, http.StatusBadRequest, "User already exists")
 		return
 	}
 
 	err = dbConn.AddUser(&user)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to add user")
 		return
 	}
 
-	httpMessage(w, http.StatusOK)
+	jsonMessage(w, http.StatusOK, "User added")
 }
 
 func Login(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
@@ -56,7 +56,7 @@ func Login(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	err := json.NewDecoder(req.Body).Decode(&user)
 
 	if err != nil {
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
@@ -66,19 +66,18 @@ func Login(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusUnauthorized)
+		jsonMessage(w, http.StatusUnauthorized, "Unauthorized User")
 		return
 	}
 
 	token, err := authInstance.CreateJWT(user.Id, user.Username)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to create token")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(token)
+	jsonMessage(w, http.StatusOK, token)
 }
 
 func VerifyToken(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
@@ -88,12 +87,11 @@ func VerifyToken(w http.ResponseWriter, req *http.Request, ps httprouter.Params)
 	token, err := authInstance.CreateJWT(userID, username)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to create token")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(token)
+	jsonMessage(w, http.StatusOK, token)
 }
 
 func requireAuth(handle httprouter.Handle) httprouter.Handle {
@@ -102,7 +100,7 @@ func requireAuth(handle httprouter.Handle) httprouter.Handle {
 		if header == "" {
 			log.Println("Missing Header")
 			w.Header().Set("WWW-Authenticate", "Bearer realm=restricted")
-			httpMessage(w, http.StatusUnauthorized)
+			jsonMessage(w, http.StatusUnauthorized, "Invalid auth token")
 			return
 		}
 
@@ -110,7 +108,7 @@ func requireAuth(handle httprouter.Handle) httprouter.Handle {
 		if len(parts) != 2 {
 			log.Println("Failed to parse header")
 			w.Header().Set("WWW-Authenticate", "Bearer realm=restricted")
-			httpMessage(w, http.StatusUnauthorized)
+			jsonMessage(w, http.StatusUnauthorized, "Invalid auth token")
 			return
 		}
 
@@ -118,35 +116,31 @@ func requireAuth(handle httprouter.Handle) httprouter.Handle {
 		claims, err := authInstance.ValidateJWT(parts[1])
 		if err != nil {
 			log.Println(err)
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode("failed to validate token")
+			jsonMessage(w, http.StatusUnauthorized, "Invalid auth token")
 			return
 		}
 
-		var id int64 = claims.Id
-		var username string = claims.Username
-
 		var user models.User
-		user.Username = username
+		user.Id = claims.Id
+		user.Username = claims.Username
 
 		user.Trim()
 
 		exists, err := dbConn.UserExists(&user)
 		if err != nil {
 			log.Println(err)
-			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode("failed to validate token")
+			jsonMessage(w, http.StatusInternalServerError, "Failed to validate token")
 			return
 		}
 
 		if !exists {
-			log.Println("user does not exist:", username)
-			httpMessage(w, http.StatusUnauthorized)
+			log.Println("User does not exist:", user.Username)
+			jsonMessage(w, http.StatusUnauthorized, "Invalid auth token")
 			return
 		}
 
-		ctx := context.WithValue(req.Context(), idKey, id)
-		ctx = context.WithValue(ctx, usernameKey, username)
+		ctx := context.WithValue(req.Context(), idKey, user.Id)
+		ctx = context.WithValue(ctx, usernameKey, user.Username)
 
 		handle(w, req.WithContext(ctx), hs)
 	}
