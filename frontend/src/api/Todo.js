@@ -17,7 +17,7 @@ export async function GetLists(token) {
       return { error: false, lists};
     }
 
-    return { error: true, message: 'Failed to get lists' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -44,7 +44,7 @@ export async function GetList(token, id) {
       return { error: false, list};
     }
 
-    return { error: true, message: 'Failed to get lists' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -70,7 +70,7 @@ export async function AddList(token, name) {
       return { error: false };
     }
 
-    return { error: true, message: 'Failed to add list' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -95,7 +95,7 @@ export async function UpdateList(token, list) {
       return { error: false, list };
     }
 
-    return { error: true, message: 'Failed to update list' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -120,7 +120,7 @@ export async function DeleteList(token, list) {
       return { error: false, lists};
     }
 
-    return { error: true, message: 'Failed to delete list' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -144,7 +144,7 @@ export async function GetTodos(token, listId) {
       return { error: false, todos };
     }
 
-    return { error: true, message: 'Failed to get todos' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -168,7 +168,7 @@ export async function GetTodo(token, itemId) {
       return { error: false, item };
     }
 
-    return { error: true, message: 'Failed to get todo item' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -196,7 +196,7 @@ export async function AddTodo(token, listId, desc) {
       return { error: false, item };
     }
 
-    return { error: true, message: 'Failed to add item' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -221,7 +221,7 @@ export async function UpdateTodo(token, todo) {
       return { error: false, item };
     }
 
-    return { error: true, message: 'Failed to update item' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,
@@ -245,7 +245,7 @@ export async function DeleteTodo(token, todo) {
       return { error: false };
     }
 
-    return { error: true, message: 'Failed to delete item' };
+    return { error: true, message: await resp.json() };
   } catch (error) {
     return {
        error: true,

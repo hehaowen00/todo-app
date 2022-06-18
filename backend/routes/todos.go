@@ -18,14 +18,14 @@ func GetTodos(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	listID, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to parse list ID")
 		return
 	}
 
 	items, err := dbConn.GetTodoItems(userID, listID)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to get todo items")
 		return
 	}
 
@@ -40,7 +40,7 @@ func GetTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	itemID, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to parse list ID")
 		return
 	}
 
@@ -51,7 +51,7 @@ func GetTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	err = dbConn.GetTodoItem(&item)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to get todo item")
 		return
 	}
 
@@ -66,20 +66,20 @@ func AddTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	err := json.NewDecoder(req.Body).Decode(&item)
 	if err != nil {
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
 	item.UserId = userID
 	item.Desc = strings.TrimSpace(item.Desc)
 	if item.Desc == "" {
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Invalid JSON payload")
 		return
 	}
 
 	err = dbConn.AddTodoItem(&item)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to add todo item")
 		return
 	}
 
@@ -95,7 +95,7 @@ func UpdateTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err := json.NewDecoder(req.Body).Decode(&item)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
@@ -103,7 +103,7 @@ func UpdateTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err = dbConn.UpdateTodoItem(&item)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to update todo item")
 		return
 	}
 
@@ -118,14 +118,14 @@ func DeleteTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 
 	err := json.NewDecoder(req.Body).Decode(&item)
 	if err != nil {
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
 	item.UserId = userID
 	err = dbConn.DeleteTodoItem(&item)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to delete todo item")
 		return
 	}
 
@@ -138,7 +138,7 @@ func GetLists(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	lists, err := dbConn.GetTodoLists(userID)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to get todo lists")
 		return
 	}
 
@@ -153,14 +153,14 @@ func GetList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	listID, err := strconv.ParseInt(value, 10, 64)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to parse list ID")
 		return
 	}
 
 	list, err := dbConn.GetTodoList(listID, userID)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to get todo list items")
 		return
 	}
 
@@ -176,7 +176,7 @@ func AddList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	err := json.NewDecoder(req.Body).Decode(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
@@ -184,20 +184,19 @@ func AddList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	exists, err := dbConn.ListExists(&list)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
 	if exists {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode("list with that name already exists")
+		jsonMessage(w, http.StatusBadRequest, "List already exists")
 		return
 	}
 
 	list.UserId = userID
 	err = dbConn.AddTodoList(&list)
 	if err != nil {
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to add todo list")
 		return
 	}
 
@@ -213,7 +212,7 @@ func UpdateList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err := json.NewDecoder(req.Body).Decode(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
@@ -221,7 +220,7 @@ func UpdateList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err = dbConn.UpdateTodoList(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to update todo list")
 		return
 	}
 
@@ -237,7 +236,7 @@ func DeleteList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err := json.NewDecoder(req.Body).Decode(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusBadRequest)
+		jsonMessage(w, http.StatusBadRequest, "Failed to decode JSON")
 		return
 	}
 
@@ -245,16 +244,16 @@ func DeleteList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	err = dbConn.DeleteTodoList(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to delete todo list")
 		return
 	}
 
 	err = dbConn.DeleteTodoItemsFromList(&list)
 	if err != nil {
 		log.Println(err)
-		httpMessage(w, http.StatusInternalServerError)
+		jsonMessage(w, http.StatusInternalServerError, "Failed to delete todo list items")
 		return
 	}
 
-	httpMessage(w, http.StatusOK)
+	jsonMessage(w, http.StatusOK, "List deleted")
 }
