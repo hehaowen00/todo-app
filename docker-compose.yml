@@ -1,11 +1,17 @@
+version: "3.9"
+
 services:
   proxy:
     build: ./proxy
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - api
       - spa
+    networks:
+      - backend
+      - serve
   api:
     build: ./backend
     ports:
@@ -16,10 +22,14 @@ services:
       - DB_PASSWORD
     depends_on:
       - db
+    networks:
+      - backend
   spa:
     build: ./frontend
     ports:
       - 3000:3000
+    networks:
+      - backend
   db:
     build: ./db
     ports:
@@ -29,5 +39,18 @@ services:
       - MARIADB_DATABASE
       - MARIADB_USER
       - MARIADB_PASSWORD
+    networks:
+      - backend
     volumes:
-      - ~/data:/var/lib/mysql
+      - db_data:/var/lib/mysql
+
+networks:
+  backend:
+    driver: bridge
+    internal: true
+  serve:
+    driver: bridge
+
+volumes:
+  db_data:
+    external: true

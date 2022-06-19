@@ -2,7 +2,9 @@
 
 FROM nginx:stable-alpine
 
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./certs /etc/nginx/certs
+
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/nginx.conf
 
 EXPOSE 80
 
