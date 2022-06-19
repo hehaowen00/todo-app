@@ -20,6 +20,10 @@ function Login() {
     setState({ ...state, [e.target.name]: e.target.value });
   };
 
+  const updateString = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value.trim() });
+  };
+
   const login = async (e) => {
     e.preventDefault();
 
@@ -72,7 +76,8 @@ function Login() {
                  name='username'
                  type='username'
                  placeholder='Username'
-                 onChange={updateField}
+                 onChange={updateString}
+                 value={state.username}
                  required
                 />
               </Form.Group>
@@ -83,6 +88,7 @@ function Login() {
                  type='password'
                  placeholder='Password'
                  onChange={updateField}
+                 value={state.password}
                  required
               />
               </Form.Group>

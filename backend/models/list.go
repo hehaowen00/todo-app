@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"database/sql"
+	"strings"
 )
 
 type TodoList struct {
@@ -18,6 +19,10 @@ func NewTodoList(userId int64, name string) TodoList {
 		userId,
 		name,
 	}
+}
+
+func (list *TodoList) Trim() {
+	list.Name = strings.TrimSpace(list.Name)
 }
 
 func (list *TodoList) Migrate(db *sql.DB) error {
@@ -59,16 +64,19 @@ func (c *Conn) ListExists(list *TodoList) (bool, error) {
 }
 
 func (c *Conn) AddTodoList(list *TodoList) error {
+	const INSERT_QUERY = `
+	INSERT INTO lists (user_id, name)
+	VALUES (?, ?)
+	`
+
 	ctx := context.Background()
+
 	tx, err := c.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	const INSERT_QUERY = `
-	INSERT INTO lists (user_id, name)
-	VALUES (?, ?)
-	`
+	defer tx.Rollback()
 
 	stmt, err := tx.Prepare(INSERT_QUERY)
 	if err != nil {
@@ -88,22 +96,18 @@ func (c *Conn) AddTodoList(list *TodoList) error {
 	list.Id = id
 
 	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (c *Conn) GetTodoLists(id int64) ([]TodoList, error) {
-	const GET_LISTS_QUERY = `
+	const GET_QUERY = `
 	SELECT id, name
 	FROM lists
 	WHERE user_id = ?
 	`
 
-	stmt, err := c.db.Prepare(GET_LISTS_QUERY)
+	stmt, err := c.db.Prepare(GET_QUERY)
 	if err != nil {
 		return nil, err
 	}
@@ -149,11 +153,13 @@ func (c *Conn) GetTodoItem(item *TodoItem) error {
 	}
 
 	err = row.Scan(&item.ListId, &item.Desc, &item.Status)
+
 	return err
 }
 
 func (c *Conn) UpdateTodoList(list *TodoList) error {
 	ctx := context.Background()
+
 	tx, err := c.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
@@ -178,6 +184,7 @@ func (c *Conn) UpdateTodoList(list *TodoList) error {
 	}
 
 	err = tx.Commit()
+
 	return err
 }
 
@@ -188,10 +195,13 @@ func (c *Conn) DeleteTodoList(list *TodoList) error {
 	`
 
 	ctx := context.Background()
+
 	tx, err := c.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
+
+	defer tx.Rollback()
 
 	stmt, err := tx.Prepare(DELETE_QUERY)
 	if err != nil {
@@ -204,10 +214,6 @@ func (c *Conn) DeleteTodoList(list *TodoList) error {
 	}
 
 	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
 
 	return err
 }

@@ -9,16 +9,18 @@ import { registerUser } from '../api/auth';
 
 function Register() {
   const { setToken } = useContext(AuthContext);
+  const nav = useNavigate();
 
   let [state, setState] = useState({});
   let [error, setError] = useState('');
   let [success, setSuccess] = useState('');
 
-  let nav = useNavigate();
+  const updateUsername = (e) => {
+    setState({ ...state, username: e.target.value.trim() });
+  };
 
-  const updateField = (e) => {
-    e.preventDefault();
-    setState({ ...state, [e.target.name]: e.target.value });
+  const updatePassword = (e) => {
+    setState({ ...state, password: e.target.value });
   };
 
   const register = async (e) => {
@@ -68,7 +70,8 @@ function Register() {
                  name='username'
                  type='username'
                  placeholder='Username'
-                 onChange={updateField}
+                 onChange={updateUsername}
+                 value={state.username}
                  required
                 />
               </Form.Group>
@@ -78,7 +81,8 @@ function Register() {
                  name='password'
                  type='password'
                  placeholder='Password'
-                 onChange={updateField}
+                 onChange={updatePassword}
+                 value={state.password}
                  required
                 />
               </Form.Group>

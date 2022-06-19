@@ -13,14 +13,14 @@ function NewList() {
 
   const handleInput = (e) => {
     setName(e.target.value);
-  }
+  };
 
   const addNewList = async (e) => {
     e.preventDefault();
     setError('');
 
-    if (name && name !== '') {
-      let resp = await AddList(context.token, name);
+    if (name && name.trim() !== '') {
+      let resp = await AddList(context.token, name.trim());
       if (resp.error) {
         setError('Failed to add list');
         return

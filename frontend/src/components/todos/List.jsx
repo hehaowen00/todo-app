@@ -15,6 +15,7 @@ function List() {
   const { id } = useParams();
 
   const list = getList(parseInt(id));
+
   const [state, setState] = useState({
      desc: '',
      error: '',
@@ -32,7 +33,7 @@ function List() {
       default:
         return true;
     }
-  }
+  };
 
   let timer;
 
@@ -48,6 +49,11 @@ function List() {
   const updateState = (e) => {
     const { name, value } = e.target;
     setState({ ...state, [name]: value });
+  };
+
+  const updateString = (e) => {
+    const { name, value } = e.target;
+    setState({ ...state, [name]: value.trim() });
   };
 
   const updateList = async () => {
@@ -128,7 +134,7 @@ function List() {
               className='me-2'
               name='name'
               placeholder='Name'
-              onChange={updateState}
+              onChange={updateString}
               onKeyDown={keydown}
               onKeyUp={keyup}
               value={state.name}

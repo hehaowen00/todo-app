@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/argon2"
 )
 
-var InvalidHash = errors.New("invalid hash")
+var ErrInvalidHash = errors.New("invalid hash")
 
 type params struct {
 	memory      uint32
@@ -88,14 +88,14 @@ func VerifyPassword(password, encoded string) (bool, error) {
 func decodeHash(token string) (p *params, salt, hash []byte, err error) {
 	values := strings.Split(token, "$")
 	if len(values) != 6 {
-		return nil, nil, nil, InvalidHash
+		return nil, nil, nil, ErrInvalidHash
 	}
 
 	var version int
 
 	_, err = fmt.Sscanf(values[2], "v=%d", &version)
 	if err != nil {
-		return nil, nil, nil, InvalidHash
+		return nil, nil, nil, ErrInvalidHash
 	}
 
 	if version != argon2.Version {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 )
 
 type User struct {
@@ -13,23 +14,30 @@ type User struct {
 }
 
 func (user *User) Migrate(c *sql.DB) error {
-	_, err := c.Exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id integer PRIMARY KEY,
-    username varchar(64) unique,
-    password blob unique
-  )`)
+	const CREATE_TABLE_QUERY = `
+	CREATE TABLE IF NOT EXISTS users (
+		id integer PRIMARY KEY,
+		username varchar(64) unique,
+		password blob unique
+	)`
+
+	_, err := c.Exec(CREATE_TABLE_QUERY)
 
 	return err
 }
 
+func (user *User) Trim() {
+	user.Username = strings.TrimSpace(user.Username)
+	user.Password = strings.TrimSpace(user.Password)
+}
+
 func (c *Conn) UserExists(user *User) (bool, error) {
-	const CHECK_IF_USER_EXISTS = `
+	const CHECK_QUERY = `
 	SELECT username FROM users
 	WHERE username = ?
 	`
 
-	stmt, err := c.db.Prepare(CHECK_IF_USER_EXISTS)
+	stmt, err := c.db.Prepare(CHECK_QUERY)
 	if err != nil {
 		return false, err
 	}
@@ -47,18 +55,21 @@ func (c *Conn) UserExists(user *User) (bool, error) {
 }
 
 func (c *Conn) AddUser(user *User) error {
+	const INSERT_QUERY = `
+	INSERT INTO users (username, password)
+	VALUES (?, ?)
+	`
+
 	ctx := context.Background()
+
 	tx, err := c.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	const ADD_USER_QUERY = `
-	INSERT INTO users (username, password)
-	VALUES (?, ?)
-	`
+	defer tx.Rollback()
 
-	stmt, err := tx.Prepare(ADD_USER_QUERY)
+	stmt, err := tx.Prepare(INSERT_QUERY)
 	if err != nil {
 		return err
 	}
@@ -83,21 +94,18 @@ func (c *Conn) AddUser(user *User) error {
 	user.Id = id
 
 	err = tx.Commit()
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (c *Conn) VerifyUser(user *User) error {
-	const GET_USER_QUERY = `
-  SELECT id, password
-  FROM users
-  WHERE username = ?;
-  `
+	const GET_QUERY = `
+	SELECT id, password
+	FROM users
+	WHERE username = ?;
+	`
 
-	stmt, err := c.db.Prepare(GET_USER_QUERY)
+	stmt, err := c.db.Prepare(GET_QUERY)
 	if err != nil {
 		return err
 	}

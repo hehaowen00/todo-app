@@ -1,4 +1,4 @@
-package main
+package auth
 
 import (
 	"errors"
@@ -31,8 +31,8 @@ func NewAuth() (Auth, error) {
 	return auth, nil
 }
 
-func (a *Auth) createJWT(id int64, username string) (string, error) {
-	expiration := time.Now().UTC().Add(1 * time.Hour)
+func (a *Auth) CreateJWT(id int64, username string) (string, error) {
+	expiration := time.Now().UTC().Add(24 * time.Hour)
 
 	claims := Token{
 		Id:       id,
@@ -47,7 +47,7 @@ func (a *Auth) createJWT(id int64, username string) (string, error) {
 	return token.SignedString(a.secret)
 }
 
-func (a *Auth) validateJWT(signedToken string) (*Token, error) {
+func (a *Auth) ValidateJWT(signedToken string) (*Token, error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&Token{},

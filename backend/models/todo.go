@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"strings"
 )
 
 type TodoItem struct {
@@ -25,6 +26,10 @@ func NewTodoItem(userId int64, listId int64, desc string, status bool) TodoItem 
 	}
 }
 
+func (item *TodoItem) Trim() {
+	item.Desc = strings.TrimSpace(item.Desc)
+}
+
 func (item *TodoItem) Migrate(db *sql.DB) error {
 	const CREATE_TABLE_QUERY = `
 	CREATE TABLE IF NOT EXISTS todos (
@@ -43,16 +48,19 @@ func (item *TodoItem) Migrate(db *sql.DB) error {
 }
 
 func (c *Conn) AddTodoItem(item *TodoItem) error {
+	const INSERT_QUERY = `
+	INSERT INTO todos (user_id, list_id, desc, status)
+	VALUES (?, ?, ?, ?)
+	`
+
 	ctx := context.Background()
+
 	tx, err := c.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
-	const INSERT_QUERY = `
-	INSERT INTO todos (user_id, list_id, desc, status)
-	VALUES (?, ?, ?, ?)
-	`
+	defer tx.Rollback()
 
 	stmt, err := tx.Prepare(INSERT_QUERY)
 	if err != nil {
@@ -72,22 +80,18 @@ func (c *Conn) AddTodoItem(item *TodoItem) error {
 	item.Id = id
 
 	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (c *Conn) GetTodoItems(userId int64, listId int64) ([]TodoItem, error) {
-	const GET_TODOS_BY_USER_QUERY = `
+	const GET_QUERY = `
 	SELECT id, desc, status
 	FROM todos
 	WHERE user_id = ? AND list_id = ?
 	`
 
-	stmt, err := c.db.Prepare(GET_TODOS_BY_USER_QUERY)
+	stmt, err := c.db.Prepare(GET_QUERY)
 	if err != nil {
 		return nil, err
 	}
@@ -117,19 +121,22 @@ func (c *Conn) GetTodoItems(userId int64, listId int64) ([]TodoItem, error) {
 }
 
 func (c *Conn) UpdateTodoItem(item *TodoItem) error {
-	ctx := context.Background()
-	tx, err := c.db.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-
-	const UPDATE_TODO_QUERY = `
+	const UPDATE_QUERY = `
 	UPDATE todos
 	SET desc = ?, status = ?
 	WHERE id = ? and user_id = ? and list_id = ?
 	`
 
-	stmt, err := tx.Prepare(UPDATE_TODO_QUERY)
+	ctx := context.Background()
+
+	tx, err := c.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(UPDATE_QUERY)
 	if err != nil {
 		return err
 	}
@@ -149,15 +156,16 @@ func (c *Conn) UpdateTodoItem(item *TodoItem) error {
 	}
 
 	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (c *Conn) DeleteTodoItem(item *TodoItem) error {
+	const DELETE_QUERY = `
+	DELETE FROM todos
+	WHERE id = ? AND user_id = ? AND list_id = ?
+	`
+
 	ctx := context.Background()
 
 	tx, err := c.db.BeginTx(ctx, nil)
@@ -165,12 +173,9 @@ func (c *Conn) DeleteTodoItem(item *TodoItem) error {
 		return err
 	}
 
-	const DELETE_TODO_QUERY = `
-	DELETE FROM todos
-	WHERE id = ? AND user_id = ? AND list_id = ?
-	`
+	defer tx.Rollback()
 
-	stmt, err := tx.Prepare(DELETE_TODO_QUERY)
+	stmt, err := tx.Prepare(DELETE_QUERY)
 	if err != nil {
 		return err
 	}
@@ -181,15 +186,16 @@ func (c *Conn) DeleteTodoItem(item *TodoItem) error {
 	}
 
 	err = tx.Commit()
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
 
-	return nil
+	return err
 }
 
 func (c *Conn) DeleteTodoItemsFromList(list *TodoList) error {
+	const DELETE_QUERY = `
+	DELETE FROM todos
+	WHERE list_id = ? AND user_id = ?
+	`
+
 	ctx := context.Background()
 
 	tx, err := c.db.BeginTx(ctx, nil)
@@ -197,12 +203,9 @@ func (c *Conn) DeleteTodoItemsFromList(list *TodoList) error {
 		return err
 	}
 
-	const DELETE_TODO_QUERY = `
-	DELETE FROM todos
-	WHERE list_id = ? AND user_id = ?
-	`
+	defer tx.Rollback()
 
-	stmt, err := tx.Prepare(DELETE_TODO_QUERY)
+	stmt, err := tx.Prepare(DELETE_QUERY)
 	if err != nil {
 		return err
 	}
@@ -214,7 +217,6 @@ func (c *Conn) DeleteTodoItemsFromList(list *TodoList) error {
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
 		return err
 	}
 
