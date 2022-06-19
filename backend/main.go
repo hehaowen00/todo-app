@@ -4,9 +4,11 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
+	"time"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/cors"
 	"host.local/todo-app/backend/auth"
 	"host.local/todo-app/backend/models"
@@ -14,20 +16,32 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "todos.db")
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	config := mysql.NewConfig()
+	config.User = os.Getenv("DB_USER")
+	config.Passwd = os.Getenv("DB_PASSWORD")
+	config.Net = "tcp"
+	config.Addr = "db"
+	config.DBName = os.Getenv("DB_NAME")
+
+	log.Println(config)
+
+	db, err := sql.Open("mysql", config.FormatDSN())
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.SetConnMaxLifetime(time.Minute * 3)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
 
 	auth, err := auth.NewAuth()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	conn, err := models.NewConn(db)
-	if err != nil {
-		log.Fatal(err)
-	}
+	conn := models.NewConn(db)
 
 	router := httprouter.New()
 

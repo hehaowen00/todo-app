@@ -25,7 +25,7 @@ export async function loginUser(username, password) {
 }
 
 export async function registerUser(username, password) {
-  if (username === '' || password === '') {
+  if (!username || !password) {
     return { error: true, message: 'Username / Password cannot be empty'}
   }
 

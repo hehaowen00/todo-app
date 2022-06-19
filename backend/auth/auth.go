@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
 	"errors"
-	"math/rand"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"

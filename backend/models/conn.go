@@ -8,27 +8,12 @@ type Conn struct {
 	db *sql.DB
 }
 
-func NewConn(db *sql.DB) (*Conn, error) {
+func NewConn(db *sql.DB) *Conn {
 	conn := &Conn{
 		db,
 	}
 
-	err := conn.Migrate(&User{})
-	if err != nil {
-		return nil, err
-	}
-
-	err = conn.Migrate(&TodoList{})
-	if err != nil {
-		return nil, err
-	}
-
-	err = conn.Migrate(&TodoItem{})
-	if err != nil {
-		return nil, err
-	}
-
-	return conn, nil
+	return conn
 }
 
 func (c *Conn) Sql() *sql.DB {

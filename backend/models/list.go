@@ -25,21 +25,6 @@ func (list *TodoList) Trim() {
 	list.Name = strings.TrimSpace(list.Name)
 }
 
-func (list *TodoList) Migrate(db *sql.DB) error {
-	const CREATE_TABLE_QUERY = `
-	CREATE TABLE IF NOT EXISTS lists (
-		id integer PRIMARY KEY,
-		user_id integer not null,
-		name text not null default null,
-		unique (user_id, name),
-		foreign key (user_id) REFERENCES users (id)
-	)`
-
-	_, err := db.Exec(CREATE_TABLE_QUERY)
-
-	return err
-}
-
 func (c *Conn) ListExists(list *TodoList) (bool, error) {
 	const EXISTS_QUERY = `
 	SELECT name FROM lists
@@ -164,7 +149,7 @@ func (c *Conn) GetTodoList(id int64, userId int64) (*TodoList, error) {
 }
 func (c *Conn) GetTodoItem(item *TodoItem) error {
 	const SELECT_QUERY = `
-	SELECT list_id, desc, status
+	SELECT list_id, description, status
 	FROM todos
 	WHERE id = ? AND user_id = ?
 	`

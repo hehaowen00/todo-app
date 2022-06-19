@@ -24,7 +24,14 @@ func Register(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	err := json.NewDecoder(req.Body).Decode(&user)
 	if err != nil {
+		log.Println(err)
 		jsonMessage(w, http.StatusBadRequest, "Could not decode JSON")
+		return
+	}
+
+	if user.Username == "" || user.Password == "" {
+		log.Println("invalid request body")
+		jsonMessage(w, http.StatusBadRequest, "Invalid JSON body")
 		return
 	}
 
@@ -44,6 +51,7 @@ func Register(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	err = dbConn.AddUser(&user)
 	if err != nil {
+		log.Println(err)
 		jsonMessage(w, http.StatusInternalServerError, "Failed to add user")
 		return
 	}

@@ -13,19 +13,6 @@ type User struct {
 	Password string `json:"password"`
 }
 
-func (user *User) Migrate(c *sql.DB) error {
-	const CREATE_TABLE_QUERY = `
-	CREATE TABLE IF NOT EXISTS users (
-		id integer PRIMARY KEY,
-		username varchar(64) unique,
-		password blob unique
-	)`
-
-	_, err := c.Exec(CREATE_TABLE_QUERY)
-
-	return err
-}
-
 func (user *User) Trim() {
 	user.Username = strings.TrimSpace(user.Username)
 	user.Password = strings.TrimSpace(user.Password)

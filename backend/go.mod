@@ -9,8 +9,8 @@ replace host.local/todo-app/backend/models => ./models
 replace host.local/todo-app/backend/routes => ./routes
 
 require (
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/mattn/go-sqlite3 v1.14.13
 	github.com/rs/cors v1.8.2
 	host.local/todo-app/backend/auth v0.0.0-00010101000000-000000000000
 	host.local/todo-app/backend/models v1.0.0

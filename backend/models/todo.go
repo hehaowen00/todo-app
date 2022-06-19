@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"strings"
 )
@@ -30,26 +29,9 @@ func (item *TodoItem) Trim() {
 	item.Desc = strings.TrimSpace(item.Desc)
 }
 
-func (item *TodoItem) Migrate(db *sql.DB) error {
-	const CREATE_TABLE_QUERY = `
-	CREATE TABLE IF NOT EXISTS todos (
-		id integer PRIMARY KEY,
-		user_id integer not null default null,
-		list_id integer not null default null,
-		desc text not null,
-		status bool not null default false,
-		foreign key (user_id) REFERENCES users (id),
-		foreign key (list_id) REFERENCES lists (id)
-	)`
-
-	_, err := db.Exec(CREATE_TABLE_QUERY)
-
-	return err
-}
-
 func (c *Conn) AddTodoItem(item *TodoItem) error {
 	const INSERT_QUERY = `
-	INSERT INTO todos (user_id, list_id, desc, status)
+	INSERT INTO todos (user_id, list_id, description, status)
 	VALUES (?, ?, ?, ?)
 	`
 
@@ -86,7 +68,7 @@ func (c *Conn) AddTodoItem(item *TodoItem) error {
 
 func (c *Conn) GetTodoItems(userId int64, listId int64) ([]TodoItem, error) {
 	const GET_QUERY = `
-	SELECT id, desc, status
+	SELECT id, description, status
 	FROM todos
 	WHERE user_id = ? AND list_id = ?
 	`
@@ -123,7 +105,7 @@ func (c *Conn) GetTodoItems(userId int64, listId int64) ([]TodoItem, error) {
 func (c *Conn) UpdateTodoItem(item *TodoItem) error {
 	const UPDATE_QUERY = `
 	UPDATE todos
-	SET desc = ?, status = ?
+	SET description = ?, status = ?
 	WHERE id = ? and user_id = ? and list_id = ?
 	`
 
