@@ -63,6 +63,7 @@ function NewList() {
               className='me-2 add-margin'
               aria-label='Name'
               onChange={handleInput}
+              required
               value={name}
             />
             </Col>
@@ -75,15 +76,6 @@ function NewList() {
                 type='submit'
               >
                 Add List
-              </Button>
-            </Col>
-            <Col md='2'>
-              <Button
-                className='form-control'
-                variant='secondary'
-                onClick={cancel}
-              >
-                Cancel
               </Button>
             </Col>
           </Row>

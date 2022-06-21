@@ -165,6 +165,7 @@ function List() {
               <FormControl
                 type='input'
                 className='me-2'
+                autoComplete='off'
                 name='desc'
                 onChange={updateField}
                 placeholder='Item'
@@ -174,10 +175,11 @@ function List() {
             </Col>
             <Col>
               <Button
-              className='w-100'
+                className='w-100'
                 type='submit'
                 onClick={addTodo}
                 variant='primary'
+                disabled={state.desc === ''}
               >
                 Add Item
               </Button>

@@ -80,15 +80,15 @@ function Todo() {
                   className='me-2'
                   name='desc'
                   placeholder='Todo'
-                  required
                   onChange={updateState}
+                  required
                   value={state.desc}
                 />
               </FormGroup>
             </Col>
           </Row>
           <Row className='justify-content-center'>
-            <Col md='8'>
+            <Col md='10'>
               <FormGroup>
                 <Form.Check
                   className='ml-5'
@@ -108,17 +108,6 @@ function Todo() {
             >
               Save
             </Button>
-            </FormGroup>
-            </Col>
-            <Col md='2'>
-            <FormGroup>
-              <Button
-                className='w-100'
-                variant='secondary'
-                onClick={cancel}
-              >
-                Cancel
-              </Button>
             </FormGroup>
             </Col>
           </Row>
