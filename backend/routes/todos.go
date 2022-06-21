@@ -72,6 +72,7 @@ func AddTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	item.UserId = userID
 	item.Desc = strings.TrimSpace(item.Desc)
+
 	if item.Desc == "" {
 		jsonMessage(w, http.StatusBadRequest, "Invalid JSON payload")
 		return
@@ -100,6 +101,7 @@ func UpdateTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	}
 
 	item.UserId = userID
+
 	err = dbConn.UpdateTodoItem(&item)
 	if err != nil {
 		log.Println(err)
@@ -123,6 +125,7 @@ func DeleteTodo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	}
 
 	item.UserId = userID
+
 	err = dbConn.DeleteTodoItem(&item)
 	if err != nil {
 		jsonMessage(w, http.StatusInternalServerError, "Failed to delete todo item")
@@ -194,6 +197,7 @@ func AddList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 	}
 
 	list.UserId = userID
+
 	err = dbConn.AddTodoList(&list)
 	if err != nil {
 		jsonMessage(w, http.StatusInternalServerError, "Failed to add todo list")
@@ -217,6 +221,7 @@ func UpdateList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	}
 
 	list.UserId = userID
+
 	err = dbConn.UpdateTodoList(&list)
 	if err != nil {
 		log.Println(err)
@@ -241,6 +246,7 @@ func DeleteList(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
 	}
 
 	list.UserId = userID
+
 	err = dbConn.DeleteTodoList(&list)
 	if err != nil {
 		log.Println(err)

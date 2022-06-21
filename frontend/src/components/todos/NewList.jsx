@@ -9,7 +9,7 @@ import { AddList } from '../../api/Todo';
 import { SetTitle } from '../../util/Util';
 
 function NewList() {
-  const {context} = useContext(AuthContext);
+  const { context, check } = useContext(AuthContext);
   const nav = useNavigate();
 
   const [error, setError] = useState(null);
@@ -24,7 +24,7 @@ function NewList() {
     setError('');
 
     if (name && name.trim() !== '') {
-      let resp = await AddList(context.token, name.trim());
+      let resp = await check(AddList(context.token, name.trim()));
       if (resp.error) {
         setError(resp.message);
         return

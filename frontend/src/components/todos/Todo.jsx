@@ -9,7 +9,7 @@ import { GetTodo, UpdateTodo } from '../../api/Todo';
 import { SetTitle } from '../../util/Util';
 
 function Todo() {
-  const { context } = useContext(AuthContext);
+  const { context, check } = useContext(AuthContext);
   const { id } = useParams();
 
   const [state, setState] = useState({
@@ -33,7 +33,7 @@ function Todo() {
   };
 
   const getItem = async () => {
-    let resp = await GetTodo(context.token, parseInt(id));
+    let resp = await check(GetTodo(context.token, parseInt(id)));
     if (resp.error) {
       cancel();
       return;
@@ -45,7 +45,7 @@ function Todo() {
   const updateItem = async (e) => {
     e.preventDefault();
     setState({ ...state, error: '' });
-    let resp = await UpdateTodo(context.token, state);
+    let resp = await check(UpdateTodo(context.token, state));
     if (resp.error) {
       setState({ ...state, error: resp.message });
       return;

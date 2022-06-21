@@ -12,6 +12,10 @@ export async function GetLists(token) {
       },
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let lists = await resp.json();
       return { error: false, lists};
@@ -21,6 +25,7 @@ export async function GetLists(token) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -39,6 +44,10 @@ export async function GetList(token, id) {
       },
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let list = await resp.json();
       return { error: false, list};
@@ -48,6 +57,7 @@ export async function GetList(token, id) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -66,6 +76,10 @@ export async function AddList(token, name) {
       }),
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       return { error: false };
     }
@@ -74,6 +88,7 @@ export async function AddList(token, name) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -90,6 +105,10 @@ export async function UpdateList(token, list) {
       body: JSON.stringify(list),
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let list = await resp.json();
       return { error: false, list };
@@ -99,6 +118,7 @@ export async function UpdateList(token, list) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -115,6 +135,10 @@ export async function DeleteList(token, list) {
       body: JSON.stringify(list)
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let lists = await resp.json();
       return { error: false, lists};
@@ -124,6 +148,7 @@ export async function DeleteList(token, list) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -139,6 +164,10 @@ export async function GetTodos(token, listId) {
       },
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let todos = await resp.json();
       return { error: false, todos };
@@ -148,6 +177,7 @@ export async function GetTodos(token, listId) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -163,6 +193,10 @@ export async function GetTodo(token, itemId) {
       },
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let item = await resp.json();
       return { error: false, item };
@@ -172,6 +206,7 @@ export async function GetTodo(token, itemId) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -191,6 +226,10 @@ export async function AddTodo(token, listId, desc) {
       })
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let item = await resp.json();
       return { error: false, item };
@@ -200,6 +239,7 @@ export async function AddTodo(token, listId, desc) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -216,6 +256,10 @@ export async function UpdateTodo(token, todo) {
       body: JSON.stringify(todo),
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let item = await resp.json();
       return { error: false, item };
@@ -225,6 +269,7 @@ export async function UpdateTodo(token, todo) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }
@@ -241,6 +286,10 @@ export async function DeleteTodo(token, todo) {
       body: JSON.stringify(todo),
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       return { error: false };
     }
@@ -249,6 +298,7 @@ export async function DeleteTodo(token, todo) {
   } catch (error) {
     return {
        error: true,
+       unauthorized: true,
        message: 'Failed to connect to server'
     };
   }

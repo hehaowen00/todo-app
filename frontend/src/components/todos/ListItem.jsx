@@ -7,7 +7,7 @@ import { ListContext } from '../../context/List';
 import { DeleteList } from '../../api/Todo';
 
 function ListItem({ id, name }) {
-  const { context } = useContext(AuthContext);
+  const { context, check } = useContext(AuthContext);
   const { removeList } = useContext(ListContext);
 
   const [show, setShow] = useState(false);
@@ -15,7 +15,7 @@ function ListItem({ id, name }) {
   const link = `/list/${id}`;
 
   const deleteList = async (e) => {
-    let resp = await DeleteList(context.token, {id, name});
+    let resp = await check(DeleteList(context.token, {id, name}));
     if (resp.error) {
     }
     removeList({ id, name });

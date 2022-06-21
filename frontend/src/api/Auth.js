@@ -63,6 +63,10 @@ export async function verifyToken(token) {
       },
     });
 
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
     if (resp.ok) {
       let token = await resp.json();
       return { error: false, token };

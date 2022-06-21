@@ -37,7 +37,7 @@ func Register(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
 
 	user.Trim()
 
-	exists, err := dbConn.UsernameExists(&user)
+	exists, err := dbConn.UsernameExists(user.Username)
 	if err != nil {
 		log.Println(err)
 		jsonMessage(w, http.StatusInternalServerError, "Server Error")
@@ -120,7 +120,6 @@ func requireAuth(handle httprouter.Handle) httprouter.Handle {
 			return
 		}
 
-		// validate token
 		claims, err := authInstance.ValidateJWT(parts[1])
 		if err != nil {
 			log.Println(err)

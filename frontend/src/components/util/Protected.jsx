@@ -32,7 +32,7 @@ function Protected({ children }) {
 
   return (
     <>
-      {allowed === true ? children : <Navigate to='/' />}
+      { allowed === true ? children : <Navigate to='/' />}
     </>
   )
 }

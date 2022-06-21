@@ -10,7 +10,7 @@ import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '
 import { SetTitle } from '../../util/Util';
 
 function List() {
-  const { context } = useContext(AuthContext);
+  const { context, check } = useContext(AuthContext);
   const { id } = useParams();
   const nav = useNavigate();
 
@@ -52,7 +52,7 @@ function List() {
 
   const updateList = async () => {
     const name = state.name.trim();
-    let resp = await UpdateList(context.token, { ...list, name });
+    let resp = await check(UpdateList(context.token, { ...list, name }));
     if (resp.error) {
       setState({ ...state, error: 'Unable to update list name'});
       return;
@@ -66,7 +66,7 @@ function List() {
       return;
     }
 
-    let resp = await AddTodo(context.token, list.id, state.desc);
+    let resp = await check(AddTodo(context.token, list.id, state.desc));
     if (resp.error) {
       setState({ ...state, error: resp.message });
       return;
@@ -80,7 +80,7 @@ function List() {
   };
 
   const updateTodo = async (todo) => {
-    let resp = await UpdateTodo(context.token, todo);
+    let resp = await check(UpdateTodo(context.token, todo));
     if (resp.error) {
       return;
     }
@@ -93,7 +93,7 @@ function List() {
   };
 
   const deleteTodo = async (todo) => {
-    let resp = await DeleteTodo(context.token, todo);
+    let resp = await check(DeleteTodo(context.token, todo));
 
     if (resp.error) {
       return;
@@ -107,7 +107,7 @@ function List() {
   };
 
   const getList = useCallback(async () => {
-    let resp = await GetList(context.token, id);
+    let resp = await check(GetList(context.token, id));
     if (resp.error) {
       nav('/');
       return;
@@ -116,7 +116,7 @@ function List() {
     setList(list)
 
     let todos = [];
-    resp = await GetTodos(context.token, id);
+    resp = await check(GetTodos(context.token, id));
 
     if (!resp.error) {
       todos = resp.todos;

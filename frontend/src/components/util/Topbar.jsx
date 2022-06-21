@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap';
-import { Navigate} from 'react-router-dom';
+import { Link, Navigate} from 'react-router-dom';
 
 import { AuthContext } from '../../context/Auth';
 
@@ -64,10 +64,13 @@ function SignedIn({ name }) {
             <LinkContainer to='/list/new'>
               <Nav.Link>Add List</Nav.Link>
             </LinkContainer>
+            <LinkContainer to='/settings'>
+              <Nav.Link>Settings</Nav.Link>
+            </LinkContainer>
           </Nav>
           <Nav>
           <Navbar.Text className='white'>
-            Signed in as: <span style={{textDecoration: 'underline'}}>{name}</span>
+            Signed in as: <Link to='/settings'><span style={{textDecoration: 'underline'}}>{name}</span></Link>
           </Navbar.Text>
           <LinkContainer to='/logout'>
             <Nav.Link>Sign Out</Nav.Link>

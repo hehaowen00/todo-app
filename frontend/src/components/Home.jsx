@@ -4,10 +4,12 @@ import { Alert, Container, Form, FormControl, ListGroup, Row, Col } from 'react-
 import ListItem from './todos/ListItem';
 import Topbar from './util/Topbar';
 
+import { AuthContext } from '../context/Auth';
 import { ListContext } from '../context/List';
 import { SetTitle } from '../util/Util';
 
 function Home() {
+  const { clearAuth } = useContext(AuthContext);
   const { context, getLists } = useContext(ListContext);
   const { error, lists} = context;
 
@@ -19,7 +21,11 @@ function Home() {
 
   useEffect(() => {
     SetTitle('Home');
-    getLists();
+    getLists().then(resp => {
+      if (resp && resp.unauthorized === true) {
+        clearAuth();
+      }
+    });
   }, [])
 
   return (

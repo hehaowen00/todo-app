@@ -23,6 +23,10 @@ export function AuthProvider({ children }) {
   const [context, setState] = useState({});
 
   const getContext = useCallback(async () => {
+    if (context.token !== '' && localStorage.getItem('token') === null) {
+      localStorage.setItem('token', context.token);
+    }
+
     let resp = await checkToken();
     if (!resp.error) {
       setToken(resp.token);
@@ -60,8 +64,18 @@ export function AuthProvider({ children }) {
     });
   };
 
+  const check = async (p) => {
+    let resp = await p;
+    if (resp.unauthorized === true) {
+      clearAuth()
+      return { error: true, message: "Unauthorized" };
+    }
+
+    return resp;
+  };
+
   return (
-    <AuthContext.Provider value={{ context, getContext, clearAuth, setToken }}>
+    <AuthContext.Provider value={{ context, getContext, clearAuth, setToken, check }}>
       {children}
     </AuthContext.Provider>
   )

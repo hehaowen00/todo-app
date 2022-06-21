@@ -25,8 +25,6 @@ func main() {
 	config.Addr = "db"
 	config.DBName = os.Getenv("DB_NAME")
 
-	log.Println(config)
-
 	db, err := sql.Open("mysql", config.FormatDSN())
 	if err != nil {
 		log.Fatal(err)

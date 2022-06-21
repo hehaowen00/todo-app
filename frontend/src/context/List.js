@@ -13,10 +13,11 @@ export function ListProvider({ children }) {
 
     if (resp.error === true) {
       setError('Failed to get todo lists');
-      return;
+      return resp;
     }
 
     setState({ ...context, lists: resp.lists });
+    return null;
   }, []);
 
   const setError = (error) => {
