@@ -5,6 +5,7 @@ import ListItem from './todos/ListItem';
 import Topbar from './util/Topbar';
 
 import { ListContext } from '../context/List';
+import { SetTitle } from '../util/Util';
 
 function Home() {
   const { context, getLists } = useContext(ListContext);
@@ -17,7 +18,8 @@ function Home() {
   };
 
   useEffect(() => {
-    getLists()
+    SetTitle('Home');
+    getLists();
   }, [])
 
   return (

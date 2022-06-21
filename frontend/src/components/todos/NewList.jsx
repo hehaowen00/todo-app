@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { Alert, Button, Container, Form, FormControl, Row, Col } from 'react-bootstrap'
 
 import Topbar from '../util/Topbar'
 
 import { AuthContext } from '../../context/Auth';
 import { AddList } from '../../api/Todo';
-import { useNavigate } from 'react-router-dom';
+import { SetTitle } from '../../util/Util';
 
 function NewList() {
   const {context} = useContext(AuthContext);
@@ -37,6 +38,10 @@ function NewList() {
     window.history.back();
   };
 
+  useEffect(() => {
+    SetTitle('New List');
+  });
+
   return (
     <>
       <Topbar />
@@ -66,7 +71,7 @@ function NewList() {
             <Col md='2'>
               <Button
                 className='form-control'
-                variant='outline-primary'
+                variant='primary'
                 type='submit'
               >
                 Add List
@@ -75,7 +80,7 @@ function NewList() {
             <Col md='2'>
               <Button
                 className='form-control'
-                variant='outline-danger'
+                variant='secondary'
                 onClick={cancel}
               >
                 Cancel

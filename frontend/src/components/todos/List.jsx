@@ -7,6 +7,7 @@ import Topbar from '../util/Topbar';
 
 import { AuthContext } from '../../context/Auth';
 import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '../../api/Todo';
+import { SetTitle } from '../../util/Util';
 
 function List() {
   const { context } = useContext(AuthContext);
@@ -41,7 +42,7 @@ function List() {
 
   const keyup = () => {
     clearTimeout(timer);
-    timer = setTimeout(updateList, 1000);
+    timer = setTimeout(updateList, 500);
   };
 
   const updateField = (e) => {
@@ -125,6 +126,7 @@ function List() {
   }, []);
 
   useEffect(() => {
+    SetTitle(list.name);
     getList();
   }, []);
 
@@ -159,13 +161,13 @@ function List() {
         <p></p>
         <Form onSubmit={addTodo}>
           <Row>
-            <Col md='11'>
+            <Col md='10'>
               <FormControl
                 type='input'
                 className='me-2'
                 name='desc'
                 onChange={updateField}
-                placeholder='New Item'
+                placeholder='Item'
                 required={true}
                 value={state.desc}
               />
@@ -177,7 +179,7 @@ function List() {
                 onClick={addTodo}
                 variant='primary'
               >
-                Add
+                Add Item
               </Button>
             </Col>
           </Row>

@@ -6,6 +6,7 @@ import Topbar from '../util/Topbar';
 
 import { AuthContext } from '../../context/Auth';
 import { GetTodo, UpdateTodo } from '../../api/Todo';
+import { SetTitle } from '../../util/Util';
 
 function Todo() {
   const { context } = useContext(AuthContext);
@@ -54,6 +55,7 @@ function Todo() {
   };
 
   useEffect(() => {
+    SetTitle('Edit Item');
     getItem();
   }, []);
 
@@ -101,7 +103,7 @@ function Todo() {
             <FormGroup>
               <Button
               className='w-100'
-              variant='outline-primary'
+              variant='primary'
               type='submit'
             >
               Save
@@ -112,7 +114,7 @@ function Todo() {
             <FormGroup>
               <Button
                 className='w-100'
-                variant='outline-danger'
+                variant='secondary'
                 onClick={cancel}
               >
                 Cancel

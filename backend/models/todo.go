@@ -2,7 +2,6 @@ package models
 
 import (
 	"context"
-	"errors"
 	"strings"
 )
 
@@ -123,18 +122,9 @@ func (c *Conn) UpdateTodoItem(item *TodoItem) error {
 		return err
 	}
 
-	result, err := stmt.Exec(item.Desc, item.Status, item.Id, item.UserId, item.ListId)
+	_, err = stmt.Exec(item.Desc, item.Status, item.Id, item.UserId, item.ListId)
 	if err != nil {
 		return err
-	}
-
-	count, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return errors.New("failed to update todo")
 	}
 
 	err = tx.Commit()
@@ -198,9 +188,6 @@ func (c *Conn) DeleteTodoItemsFromList(list *TodoList) error {
 	}
 
 	err = tx.Commit()
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }

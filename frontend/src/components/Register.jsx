@@ -6,6 +6,7 @@ import Topbar from './util/Topbar';
 
 import { AuthContext, checkToken } from '../context/Auth';
 import { registerUser } from '../api/Auth';
+import { SetTitle } from '../util/Util';
 
 function Register() {
   const { setToken } = useContext(AuthContext);
@@ -50,6 +51,7 @@ function Register() {
   }, [setToken, nav]);
 
   useEffect(() => {
+    SetTitle('Register');
     verify();
   }, [verify]);
 
