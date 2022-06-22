@@ -2,10 +2,7 @@
 
 Todo list application
 
-## Showcase
-
-- [Login Screen](images/login.png)
-- [List Screen](images/list.png)
+<img src="images/cover.png" width="800px">
 
 ## Built With
 
