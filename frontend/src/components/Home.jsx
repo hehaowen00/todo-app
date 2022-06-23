@@ -6,7 +6,7 @@ import Topbar from './util/Topbar';
 
 import { AuthContext } from '../context/Auth';
 import { ListContext } from '../context/List';
-import { SetTitle } from '../util/Util';
+import { setTitle } from '../util/Util';
 
 function Home() {
   const { clearAuth } = useContext(AuthContext);
@@ -20,7 +20,7 @@ function Home() {
   };
 
   useEffect(() => {
-    SetTitle('Home');
+    setTitle('Home');
     getLists().then(resp => {
       if (resp && resp.unauthorized === true) {
         clearAuth();

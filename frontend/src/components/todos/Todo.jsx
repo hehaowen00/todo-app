@@ -6,7 +6,7 @@ import Topbar from '../util/Topbar';
 
 import { AuthContext } from '../../context/Auth';
 import { GetTodo, UpdateTodo } from '../../api/Todo';
-import { SetTitle } from '../../util/Util';
+import { setTitle } from '../../util/Util';
 
 function Todo() {
   const { context, check } = useContext(AuthContext);
@@ -44,6 +44,7 @@ function Todo() {
 
   const updateItem = async (e) => {
     e.preventDefault();
+    
     setState({ ...state, error: '' });
     let resp = await check(UpdateTodo(context.token, state));
     if (resp.error) {
@@ -55,7 +56,7 @@ function Todo() {
   };
 
   useEffect(() => {
-    SetTitle('Edit Item');
+    setTitle('Edit Item');
     getItem();
   }, []);
 
@@ -100,15 +101,15 @@ function Todo() {
               </FormGroup>
             </Col>
             <Col md='2'>
-            <FormGroup>
-              <Button
-              className='w-100'
-              variant='primary'
-              type='submit'
-            >
-              Save
-            </Button>
-            </FormGroup>
+              <FormGroup>
+                <Button
+                  className='w-100'
+                  variant='primary'
+                  type='submit'
+                >
+                  Save
+                </Button>
+              </FormGroup>
             </Col>
           </Row>
         </Form>

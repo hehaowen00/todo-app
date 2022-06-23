@@ -6,7 +6,7 @@ import Topbar from './util/Topbar';
 
 import { AuthContext, checkToken } from '../context/Auth';
 import { loginUser } from '../api/Auth'
-import { SetTitle } from '../util/Util';
+import { setTitle } from '../util/Util';
 
 function Login() {
   const { context, clearAuth, setToken } = useContext(AuthContext);
@@ -49,7 +49,7 @@ function Login() {
   }, [nav]);
 
   useEffect(() => {
-    SetTitle('Login');
+    setTitle('Login');
 
     if (context.allowed) {
       nav('/home');

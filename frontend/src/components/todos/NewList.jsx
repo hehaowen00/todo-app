@@ -6,7 +6,7 @@ import Topbar from '../util/Topbar'
 
 import { AuthContext } from '../../context/Auth';
 import { AddList } from '../../api/Todo';
-import { SetTitle } from '../../util/Util';
+import { setTitle } from '../../util/Util';
 
 function NewList() {
   const { context, check } = useContext(AuthContext);
@@ -35,7 +35,7 @@ function NewList() {
   };
 
   useEffect(() => {
-    SetTitle('New List');
+    setTitle('New List');
   });
 
   return (

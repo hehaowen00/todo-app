@@ -14,7 +14,7 @@ import {
   UpdateList,
   UpdateTodo
 } from '../../api/Todo';
-import { SetTitle } from '../../util/Util';
+import { setTitle } from '../../util/Util';
 
 function List() {
   const { context, check } = useContext(AuthContext);
@@ -129,11 +129,11 @@ function List() {
       todos = resp.todos;
     }
 
+    setTitle(list.name);
     setState({ ...state, name: list.name, todos })
   }, []);
 
   useEffect(() => {
-    SetTitle(list.name);
     getList();
   }, []);
 

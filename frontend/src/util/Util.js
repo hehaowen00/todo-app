@@ -1,3 +1,3 @@
-export function SetTitle(page) {
+export function setTitle(page) {
   document.title = `Todo App | ${page}`;
 }

@@ -6,11 +6,11 @@ import Security from './settings/Security';
 import Profile from './settings/Profile';
 import Topbar from './util/Topbar';
 
-import { SetTitle } from '../util/Util';
+import { setTitle } from '../util/Util';
 
 function Settings() {
   useEffect(() => {
-    SetTitle('Settings');
+    setTitle('Settings');
   });
 
   return (
