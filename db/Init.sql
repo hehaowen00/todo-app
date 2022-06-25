@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS `todos`.`lists` (
     `user_id` INT NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE (`user_id`, `name`)
-    -- FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+    CONSTRAINT `user_fk` FOREIGN KEY (`user_id`)
+        REFERENCES `users` (`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `todos`.`todos` (
@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS `todos`.`todos` (
     `description` TEXT NOT NULL,
     `status` BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+      ON DELETE CASCADE,
     FOREIGN KEY (`list_id`) REFERENCES `lists` (`id`)
+      ON DELETE CASCADE
 );
