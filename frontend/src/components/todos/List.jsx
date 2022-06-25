@@ -6,7 +6,14 @@ import TodoItem from './TodoItem';
 import Topbar from '../util/Topbar';
 
 import { AuthContext } from '../../context/Auth';
-import { AddTodo, DeleteTodo, GetList, GetTodos, UpdateList, UpdateTodo } from '../../api/Todo';
+import {
+  AddTodo,
+  DeleteTodo,
+  GetList,
+  GetTodos,
+  UpdateList,
+  UpdateTodo
+} from '../../api/Todo';
 import { SetTitle } from '../../util/Util';
 
 function List() {

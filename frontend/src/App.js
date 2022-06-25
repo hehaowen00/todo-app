@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
+import Settings from './components/Settings';
 
 import List from './components/todos/List';
 import NewList from './components/todos/NewList';
@@ -33,6 +34,7 @@ function App() {
           <Route exact path='/list/new' element={<Protected><NewList/></Protected>} />
           <Route path='/list/:id' element={<Protected><List /></Protected>} />
           <Route path='/item/:id' element={<Protected><Todo /></Protected>} />
+          <Route path='/settings' element={<Protected><Settings /></Protected>} />
         </Routes>
       </BrowserRouter>
       </ListProvider>

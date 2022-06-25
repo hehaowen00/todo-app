@@ -34,10 +34,6 @@ function NewList() {
     }
   };
 
-  const cancel = (e) => {
-    window.history.back();
-  };
-
   useEffect(() => {
     SetTitle('New List');
   });

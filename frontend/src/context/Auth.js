@@ -53,6 +53,8 @@ export function AuthProvider({ children }) {
   };
 
   const setToken = (token) => {
+    localStorage.setItem('token', token);
+
     const parts = token.split('.');
     const data = JSON.parse(atob(parts[1]));
 

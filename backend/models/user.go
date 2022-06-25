@@ -143,3 +143,95 @@ func (c *Conn) VerifyUser(user *User) error {
 
 	return errors.New("invalid credentials")
 }
+
+func (c *Conn) UpdateUser(user *User, newUsername string) error {
+	const UPDATE_QUERY = `
+	UPDATE users
+	SET username = ?
+	WHERE id = ? AND username = ?
+	`
+
+	ctx := context.Background()
+
+	tx, err := c.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(UPDATE_QUERY)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(newUsername, user.Id, user.Username)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
+
+	return err
+}
+
+func (c *Conn) UpdatePassword(user *User) error {
+	const UPDATE_QUERY = `
+	UPDATE users
+	SET password = ?
+	WHERE id = ? AND username = ?
+	`
+
+	ctx := context.Background()
+
+	tx, err := c.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(UPDATE_QUERY)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(user.Password, user.Id, user.Username)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
+
+	return err
+}
+
+func (c *Conn) DeleteUser(user *User) error {
+	const DELETE_QUERY = `
+	DELETE FROM users
+	WHERE id = ? AND username = ?
+	`
+
+	ctx := context.Background()
+
+	tx, err := c.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	defer tx.Rollback()
+
+	stmt, err := tx.Prepare(DELETE_QUERY)
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(user.Id, user.Username)
+	if err != nil {
+		return err
+	}
+
+	err = tx.Commit()
+
+	return err
+}

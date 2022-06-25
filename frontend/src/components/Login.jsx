@@ -36,8 +36,6 @@ function Login() {
       return
     }
 
-    localStorage.setItem('token', resp.token) ;
-
     setToken(resp.token);
     nav('/home');
   };
