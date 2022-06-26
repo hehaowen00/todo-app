@@ -45,6 +45,7 @@ func RegisterRoutes(router *httprouter.Router) {
   router.POST("/api/login", login)
   router.POST("/api/verify", requireAuth(verifyToken))
 
+  router.GET("/api/user/data", requireAuth(exportUserData))
   router.PUT("/api/user/profile", requireAuth(updateUsername))
   router.PUT("/api/user/password", requireAuth(updatePassword))
   router.DELETE("/api/user", requireAuth(deleteUser))

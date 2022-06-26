@@ -46,15 +46,10 @@ function Login() {
       setToken(resp.token);
       nav('/home');
     }
-  }, [nav]);
+  }, []);
 
   useEffect(() => {
     setTitle('Login');
-
-    if (context.allowed) {
-      nav('/home');
-    }
-
     verify();
   }, [context, nav, verify]);
 
@@ -103,7 +98,7 @@ function Login() {
               <a href='/register'>Don't have an account?</a>
               </p>
               <Button
-              className='w-100'
+                className='w-100'
                 type='submit'
                 variant='primary'
               >

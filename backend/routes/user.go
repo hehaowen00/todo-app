@@ -1,7 +1,9 @@
 package routes
 
 import (
+  "bytes"
   "encoding/json"
+  "io"
   "log"
   "net/http"
 
@@ -82,7 +84,7 @@ func updatePassword(w http.ResponseWriter, req *http.Request, ps httprouter.Para
   user := payload.User
   user.Id = userId
   user.Username = username
-  
+
   err = dbConn.VerifyUser(&user)
   if err != nil {
     log.Println(err)
@@ -139,4 +141,28 @@ func deleteUser(w http.ResponseWriter, req *http.Request, ps httprouter.Params) 
   }
 
   jsonMessage(w, http.StatusOK, "User deleted")
+}
+
+func exportUserData(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
+  userId := req.Context().Value(idKey).(int64)
+
+  data, err := dbConn.ExportData(userId)
+  if err != nil {
+    log.Println(err)
+    jsonMessage(w, http.StatusInternalServerError, "Failed to retrieve user data")
+    return
+  }
+
+  content, err := json.MarshalIndent(data, "", "  ")
+  if err != nil {
+    log.Println(err)
+    jsonMessage(w, http.StatusInternalServerError, "Failed to retrieve user data")
+    return
+  }
+
+  reader := bytes.NewReader(content)
+
+  w.Header().Set("Content-Type", "application/json")
+  w.Header().Set("Content-Disposition", "attachment; filename=data.json")
+  io.Copy(w, reader)
 }

@@ -95,3 +95,37 @@ export async function deleteAccount(token, password) {
     return { error: true, message: 'Failed to connect to server' };
   }
 }
+
+export async function DownloadData(token) {
+  try {
+    let resp = await fetch(`${BASE_URL}/data`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (resp.status === 401) {
+      return { error: true, unauthorized: true };
+    }
+
+    if (!resp.ok) {
+      let message = await resp.json();
+      return { error: true, message };
+    }
+
+    let data = await resp.json();
+    let blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
+    });
+
+    var a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = 'data.json';
+    a.click();
+
+    return { error: true };
+  } catch (error) {
+    return { error: true, message: 'Failed to connect to server' };
+  }
+}

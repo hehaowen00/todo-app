@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Alert, Button, Form, Row, Col, Tab } from 'react-bootstrap';
 
 import { AuthContext } from '../../context/Auth';
-import { updateDetails } from '../../api/User';
+import { DownloadData, updateDetails } from '../../api/User';
 
 function Profile() {
   const { context, check, setToken } = useContext(AuthContext);
@@ -39,6 +39,10 @@ function Profile() {
     setState({ password: '', error: '', success: 'Username updated' });
   };
 
+  const downloadData = async () => {
+    console.log(await DownloadData(context.token));
+  };
+
   return (
     <>
       <Tab.Pane eventKey="profile">
@@ -64,6 +68,7 @@ function Profile() {
                 value={state.username}
                 required
               />
+              <Form.Label>Password</Form.Label>
               <Form.Control
                 className='mb-3'
                 type='password'
@@ -83,7 +88,7 @@ function Profile() {
             </Alert>
           }
           <Row className='justify-content-end'>
-            <Col lg='2' md='4' sm='5' xs='12'>
+            <Col lg='3' md='5' sm='12' xs='12'>
               <Button
                 className='w-100'
                 type='submit'
@@ -93,6 +98,23 @@ function Profile() {
             </Col>
           </Row>
         </Form>
+        <p></p>
+        <h5>Export Data</h5>
+        <hr />
+        <Row className='justify-content-end'>
+          <Col>
+            Export user data into a JSON file
+          </Col>
+          <Col lg='2' md='5' sm='12' xs='12'>
+            <Button
+              className='w-100'
+              variant='primary'
+              onClick={downloadData}
+            >
+            Export JSON
+          </Button>
+          </Col>
+        </Row>
       </Tab.Pane>
     </>
   )
