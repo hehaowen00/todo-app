@@ -5,7 +5,7 @@ import { Alert, Button, Container, Form, FormControl, Row, Col } from 'react-boo
 import Topbar from '../util/Topbar'
 
 import { AuthContext } from '../../context/Auth';
-import { AddList } from '../../api/Todo';
+import { AddList } from '../../api/List';
 import { setTitle } from '../../util/Util';
 
 function NewList() {

@@ -11,7 +11,7 @@ function Protected({ children }) {
 
   useEffect(() => {
     if (Object.keys(context).length === 0) {
-      getContext()
+      getContext();
     }
   }, []);
 

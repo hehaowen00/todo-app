@@ -32,6 +32,7 @@ export function AuthProvider({ children }) {
       setToken(resp.token);
       return;
     }
+
     setError({ error: true, msg: 'Failed to authenticate user' });
   }, []);
 

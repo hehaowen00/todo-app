@@ -2,9 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Button, ListGroupItem, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-import { AuthContext } from '../../context/Auth';
-import { ListContext } from '../../context/List';
-import { DeleteList } from '../../api/Todo';
+import { AuthContext } from '../context/Auth';
+import { ListContext } from '../context/List';
+import { DeleteList } from '../api/List';
 
 function ListItem({ id, name }) {
   const { context, check } = useContext(AuthContext);
@@ -17,6 +17,7 @@ function ListItem({ id, name }) {
   const deleteList = async (e) => {
     let resp = await check(DeleteList(context.token, {id, name}));
     if (resp.error) {
+      return;
     }
     removeList({ id, name });
   };

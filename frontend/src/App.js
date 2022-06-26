@@ -6,7 +6,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Settings from './components/Settings';
 
-import List from './components/todos/List';
+import List from './components/todos/list/List';
 import NewList from './components/todos/NewList';
 import Todo from './components/todos/Todo';
 

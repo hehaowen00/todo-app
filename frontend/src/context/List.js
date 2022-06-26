@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { GetLists } from '../api/Todo';
+import { GetLists } from '../api/List';
 
 export const ListContext = React.createContext();
 
@@ -17,7 +17,6 @@ export function ListProvider({ children }) {
     }
 
     setState({ ...context, lists: resp.lists });
-    return null;
   }, []);
 
   const setError = (error) => {
